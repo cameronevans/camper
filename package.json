@@ -1,0 +1,14 @@
+{
+  "name": "bandcamperjs",
+  "version": "0.1.0",
+  "description": "for bandcamping",
+  "main": "bc.js",
+  "scripts": {
+    "dev": "web-ext run --verbose"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "sanitize-filename": "^1.6.1"
+  }
+}
