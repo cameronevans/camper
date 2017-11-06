@@ -1,5 +1,5 @@
 ## Camper ##
-Uses WebExtention API for camping
+Uses WebExtension API for camping
 
 #### Adjust the fly ####
 `npm i --save web-ext`

@@ -20,6 +20,7 @@ function download(album) {
 }
 
 function runContent() {
+  browser.tabs.executeScript({file: "./lib/browser-polyfill.js"});
   browser.tabs.executeScript(null, {file: "./content.js"});
 }
 

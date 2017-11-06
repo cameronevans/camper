@@ -1,13 +1,16 @@
 {
   "manifest_version": 2,
   "name": "camper",
-  "version": "0.1",
+  "version": "0.1.1",
   "description": "for camping",
   "icons": {
     "48": "icons/camper.png"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "./lib/browser-polyfill.js",
+      "background.js"
+    ]
   },
   "page_action": {
     "browser_style": false,
