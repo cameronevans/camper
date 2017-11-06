@@ -20,4 +20,7 @@ function findAlbum(garbage) {
 }
 
 const album = findAlbum(document.documentElement.innerHTML);
-browser.runtime.sendMessage(album);
+
+if (Object.keys(album).length !== 0) {
+  browser.runtime.sendMessage(album);
+}
