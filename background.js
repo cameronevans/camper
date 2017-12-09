@@ -15,15 +15,18 @@ function sanitize(str) {
   return str.replace(/[\\\/$'"]/g, '');
 }
 
-function download() {
+function download(message) {
+  console.log('message: ', message);
   console.log('downloading', state.album);
   const {album} = state;
-  const folder = `${album.artist} - ${album.title}`
-  album.tracks.forEach(({track_num: number, title, file: { 'mp3-128': url} }) => {
+  const folder = `${album.artist} - ${album.title}`;
+  album.tracks.forEach(({track_num: number, title, file: {'mp3-128': url}}) => {
     const filename = `${sanitize(folder)}/${sanitize(title)}.mp3`;
     let downloading = browser.downloads.download({filename, url});
     downloading.then(onStartedDownload, onFailed);
-  });
+  }); // put sendresponse in callback?
+  
+  return true;
 }
 
 // show API method doesn't seem to support the callback parameter,
@@ -39,6 +42,8 @@ function onReceiveAlbum(album) {
     browser.pageAction.show(state.tabId);
     browser.pageAction.onClicked.addListener(download);
   }
+
+  return true;
 }
 
 browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
