@@ -22,5 +22,6 @@ function findAlbum(garbage) {
 const album = findAlbum(document.documentElement.innerHTML);
 
 if (Object.keys(album).length !== 0) {
+  console.log('sending album', album);
   browser.runtime.sendMessage(album);
 }
