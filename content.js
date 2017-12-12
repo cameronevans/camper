@@ -1,26 +1,59 @@
+const {
+  trackGarbageRegex,
+  artistGarbageRegex,
+  titleGarbageRegex,
+  trackRegex,
+  artistRegex,
+  titleRegex
+} = require('./lib/constants');
+
+function isEmpty(object = {}) {
+  return Object.keys(object).length !== 0;
+}
+
+function dumpsterDive(garbage, takeRegex, tossRegex, replace = '') {
+  const trash = garbage.match(takeRegex) || [];
+  let finds = '';
+  if(trash.length > 0){
+    finds = trash[0].replace(tossRegex, replace);
+  }
+
+  return finds;
+}
+
 function findAlbum(garbage) {
-  const trackGarbageRegex = /trackinfo:\s\[/;
-  const artistGarbageRegex = /artist:\s\"|\"/g;
-  const titleGarbageRegex = /album_title:\s\"|\"/g;
-  const trackRegex = /trackinfo:\s\[.*\]/;
-  const artistRegex = /artist:\s\".*\"/;
-  const titleRegex = /album_title:\s\".*\"/;
+  const artist = dumpsterDive(garbage, artistRegex, artistGarbageRegex);
+  const title = dumpsterDive(garbage, titleRegex, titleGarbageRegex);
+  // the following is not currently needed as the metadata seems to be included in the tracks, could include it in the downloads regardless?
+  // const artUrl = document.getElementById('tralbumArt').firstElementChild.getAttribute('href');
+  const parsedTracks = dumpsterDive(garbage, trackRegex, trackGarbageRegex, '\"trackinfo\":[').replace('\}\]', '}]}').replace(/\\\\/, '');
+  if (parsedTracks) {
+    const tracks = JSON.parse(`{${parsedTracks}`).trackinfo;
 
-  const artist = garbage.match(artistRegex)[0].replace(artistGarbageRegex, '');
-  const title = garbage.match(titleRegex)[0].replace(titleGarbageRegex, '');
-  const artUrl = document.getElementById('tralbumArt').firstElementChild.getAttribute('href');
-  const tracks = JSON.parse(`{${garbage.match(trackRegex)[0].replace(trackGarbageRegex, '\"trackinfo\":[').replace('\}\]', '}]}').replace(/\\\\/, '')}`).trackinfo;
-
-  return {
-    artist,
-    title,
-    artUrl,
-    tracks
+    return {
+      artist,
+      title,
+      tracks
+    };
   }
 }
 
-const album = findAlbum(document.documentElement.innerHTML);
+function isAlbumValid(album = {}) {
+  const {artist, title, tracks} = album;
+  let valid = false;
+  if (isEmpty(album) && isEmpty(artist) && isEmpty(tracks)) {
+    valid = true;
+  }
 
-if (Object.keys(album).length !== 0) {
-  browser.runtime.sendMessage(album);
+  return valid;
 }
+
+function runContent() {
+  const album = findAlbum(document.documentElement.innerHTML);
+
+  if (isAlbumValid(album)) {
+    browser.runtime.sendMessage(album);
+  }
+}
+
+runContent();

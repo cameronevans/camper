@@ -2,9 +2,13 @@
 Uses WebExtension API for camping
 
 #### Adjust the fly ####
-`npm i --save web-ext`
+`npm i`
 
-`npm run dev`
+`npm run build`
+
+Chrome: "Load unpacked extension"
+
+Firefox: `npm run dev`
 
 #### Campground Rules ####
 - Leave no trace

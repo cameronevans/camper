@@ -4,8 +4,18 @@
   "description": "for camping",
   "main": "background.js",
   "scripts": {
-    "dev": "web-ext run --verbose"
+    "dev": "web-ext run --verbose",
+    "watch": "node node_modules/.bin/webpack-dev-server",
+    "build": "node node_modules/.bin/webpack --display-error-details"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "web-ext": "^2.2.2",
+    "webextension-polyfill": "^0.2.1",
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^2.9.7"
+  }
 }
