@@ -24,8 +24,7 @@ function dumpsterDive(garbage, takeRegex, tossRegex, replace = '') {
 function findAlbum(garbage) {
   const artist = dumpsterDive(garbage, artistRegex, artistGarbageRegex);
   const title = dumpsterDive(garbage, titleRegex, titleGarbageRegex);
-  // the following is not currently needed as the metadata seems to be included in the tracks, could include it in the downloads regardless?
-  // const artUrl = document.getElementById('tralbumArt').firstElementChild.getAttribute('href');
+  const cover = document.getElementById('tralbumArt').firstElementChild.getAttribute('href');
   const parsedTracks = dumpsterDive(garbage, trackRegex, trackGarbageRegex, '\"trackinfo\":[').replace('\}\]', '}]}').replace(/\\\\/, '');
   if (parsedTracks) {
     const tracks = JSON.parse(`{${parsedTracks}`).trackinfo;
@@ -33,20 +32,15 @@ function findAlbum(garbage) {
     return {
       artist,
       title,
-      tracks
+      folder: `${artist} - ${title}`,
+      tracks: tracks.filter(({ file }) => Boolean(file) && Boolean(file['mp3-128'])),
+      cover
     };
   }
+  return {};
 }
 
-function isAlbumValid(album = {}) {
-  const {artist, title, tracks} = album;
-  let valid = false;
-  if (isEmpty(album) && isEmpty(artist) && isEmpty(tracks)) {
-    valid = true;
-  }
-
-  return valid;
-}
+const isAlbumValid = ({ artist, title, tracks }) => isEmpty(artist) && isEmpty(tracks);
 
 function runContent() {
   const album = findAlbum(document.documentElement.innerHTML);

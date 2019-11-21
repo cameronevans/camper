@@ -4,7 +4,7 @@
   "version": "0.1.1",
   "description": "for camping",
   "icons": {
-    "48": "icons/camper.png"
+    "48": "icons/camper-inactive.png"
   },
   "background": {
     "scripts": [
@@ -14,7 +14,7 @@
   },
   "page_action": {
     "browser_style": false,
-    "default_icon": "icons/camper.png",
+    "default_icon": "icons/camper-inactive.png",
     "default_title": "camper"
   },
   "permissions": [
