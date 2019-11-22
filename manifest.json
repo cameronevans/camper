@@ -19,6 +19,7 @@
   },
   "permissions": [
     "*://*.bandcamp.com/*",
+    "*://*.bcbits.com/*",
     "downloads",
     "debugger",
     "activeTab",

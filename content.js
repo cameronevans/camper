@@ -2,9 +2,11 @@ const {
   trackGarbageRegex,
   artistGarbageRegex,
   titleGarbageRegex,
+  dateGarbageRegex,
   trackRegex,
   artistRegex,
-  titleRegex
+  titleRegex,
+  dateRegex
 } = require('./lib/constants');
 
 function isEmpty(object = {}) {
@@ -24,6 +26,7 @@ function dumpsterDive(garbage, takeRegex, tossRegex, replace = '') {
 function findAlbum(garbage) {
   const artist = dumpsterDive(garbage, artistRegex, artistGarbageRegex);
   const title = dumpsterDive(garbage, titleRegex, titleGarbageRegex);
+  const date = dumpsterDive(garbage, dateRegex, dateGarbageRegex);
   const cover = document.getElementById('tralbumArt').firstElementChild.getAttribute('href');
   const parsedTracks = dumpsterDive(garbage, trackRegex, trackGarbageRegex, '\"trackinfo\":[').replace('\}\]', '}]}').replace(/\\\\/, '');
   if (parsedTracks) {
@@ -34,7 +37,8 @@ function findAlbum(garbage) {
       title,
       folder: `${artist} - ${title}`,
       tracks: tracks.filter(({ file }) => Boolean(file) && Boolean(file['mp3-128'])),
-      cover
+      cover,
+      date: new Date(date).getUTCFullYear()
     };
   }
   return {};
