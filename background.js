@@ -4,19 +4,26 @@ const ID3Writer = require('browser-id3-writer');
 
 let state = {
   album: {},
-  tabId: null
+  tabId: null,
+  intervalId: '',
+  downloads: {}
 };
 
 function onStartedDownload(id) {
+  state.downloads[id] = true;
   console.log(`Started downloading: ${id}`);
 }
 
 function onFailed(error) {
-  console.log(`Download failed: ${error}`);
+  state.downloads[Math.random().toString()] = false;
+  clearInterval(state.intervalId);
+  const { tabId } = state;
+  browser.pageAction.setIcon({ tabId, path: `./icons/camper-died.png` });
+  console.log(`Download failed: ${error.message}`);
 }
 
 function sanitize(str) {
-  return str.replace(/[\\\/$'"]/g, '');
+  return str.replaceAll(/[\\\/$'"]/g, '').replaceAll(':', '');
 }
 
 function loadFile(url, processResponse) {
@@ -36,8 +43,50 @@ function loadFile(url, processResponse) {
   xhr.send();
 }
 
+
+// bugs out on second download?
+function animateProgressIcon() {
+  const { tabId, downloads } = state;
+  const frames = [0, 1, 2, 1];
+  let index = 0;
+
+  setActiveIcon(index);
+  state.intervalId = setInterval(() => {
+    index++;
+    console.log(index);
+    setActiveIcon(frames[index % 4]);
+  }, 250);
+}
+
+function setActiveIcon(frame = 1) {
+  const { tabId } = state;
+  browser.pageAction.setIcon({ tabId, path: `./icons/camper-active-${frame}.png` });
+  console.log('frame', frame, Date.now());
+}
+
+function downloadOnChanged(event) {
+  const { id, state: { current } = {} } = event;
+  state.downloads[id] = current === 'complete';
+  if (Object.keys(state.downloads).length === state.album.tracks.length + 1 &&
+    Object.values(state.downloads).every(download => download)) {
+    onComplete();
+  }
+}
+
+function onComplete() {
+  clearInterval(state.intervalId);
+  const setActiveFrame = setTimeout(setActiveIcon, 250);
+  browser.downloads.onChanged.removeListener(downloadOnChanged);
+  state.downloads = {};
+}
+
 function download(message, sender) {
   const { album: { tracks, cover, folder, artist, date, title: albumTitle } } = state;
+
+  animateProgressIcon();
+
+  browser.downloads.onChanged.addListener(downloadOnChanged);
+
   loadFile(cover, coverData => {
     tracks.forEach(({ track_num: number, title, file: { 'mp3-128': url } }) => {
       const filename = `${sanitize(folder)}/${sanitize(title)}.mp3`;
@@ -57,6 +106,7 @@ function download(message, sender) {
         taggedUrl = writer.getURL();
 
         const downloading = browser.downloads.download({ filename, url: taggedUrl });
+        console.log(filename);
         downloading.then(onStartedDownload, onFailed);
       });
     });
@@ -72,7 +122,7 @@ function onReceiveAlbum(album) {
     state.album = album;
     browser.pageAction.show(state.tabId);
     browser.pageAction.onClicked.addListener(download);
-    browser.pageAction.setIcon({ tabId: state.tabId, path: './icons/camper-active.png' });
+    setActiveIcon();
   }
 
   return true;

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "camper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "for camping",
   "icons": {
     "48": "icons/camper-inactive.png"
