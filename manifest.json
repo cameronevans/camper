@@ -1,13 +1,10 @@
 {
   "manifest_version": 2,
   "name": "camper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "for camping",
   "icons": {
-    "16": "icons/camper-inactive.png",
-    "16": "icons/camper-active-0.png",
-    "16": "icons/camper-active-1.png",
-    "16": "icons/camper-active-2.png"
+    "48": "icons/camper-inactive.png"
   },
   "background": {
     "scripts": [

@@ -16,11 +16,14 @@ function onStartedDownload(id) {
 
 function onFailed(error) {
   state.downloads[Math.random().toString()] = false;
-  console.log(`Download failed: ${error}`);
+  clearInterval(state.intervalId);
+  const { tabId } = state;
+  browser.pageAction.setIcon({ tabId, path: `./icons/camper-died.png` });
+  console.log(`Download failed: ${error.message}`);
 }
 
 function sanitize(str) {
-  return str.replace(/[\\\/$'"]/g, '');
+  return str.replaceAll(/[\\\/$'"]/g, '').replaceAll(':', '');
 }
 
 function loadFile(url, processResponse) {
@@ -103,6 +106,7 @@ function download(message, sender) {
         taggedUrl = writer.getURL();
 
         const downloading = browser.downloads.download({ filename, url: taggedUrl });
+        console.log(filename);
         downloading.then(onStartedDownload, onFailed);
       });
     });

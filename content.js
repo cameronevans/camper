@@ -31,7 +31,6 @@ function findAlbum(garbage) {
   const parsedTracks = dumpsterDive(garbage, trackRegex, trackGarbageRegex, '\"trackinfo\":[').replace('\}\]', '}]}').replace(/\\\\/, '');
   if (parsedTracks) {
     const tracks = JSON.parse(`{${parsedTracks}`).trackinfo;
-
     return {
       artist,
       title,
@@ -47,7 +46,7 @@ function findAlbum(garbage) {
 const isAlbumValid = ({ artist, title, tracks }) => isEmpty(artist) && isEmpty(tracks);
 
 function runContent() {
-  const album = findAlbum(document.documentElement.innerHTML);
+  const album = findAlbum(document.documentElement.innerHTML.replaceAll('&quot;', '"'));
 
   if (isAlbumValid(album)) {
     browser.runtime.sendMessage(album);
