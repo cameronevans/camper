@@ -5,23 +5,26 @@
   "main": "background.js",
   "scripts": {
     "dev": "web-ext run --verbose",
-    "watch": "node node_modules/.bin/webpack-dev-server",
-    "build": "node node_modules/.bin/webpack --display-error-details"
+    "watch": "webpack-dev-server",
+    "build": "webpack"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "browser-id3-writer": "^4.3.0",
-    "elliptic": "^6.5.3",
+    "browser-id3-writer": "^4.4.0",
+    "elliptic": "^6.5.4",
     "http-proxy": "^1.18.1",
     "is-my-json-valid": "^2.20.5",
-    "lodash": "^4.17.20",
-    "web-ext": "^3.2.1",
-    "webextension-polyfill": "^0.5.0",
-    "webpack": "^3.10.0",
+    "lodash": "^4.17.21",
+    "npm-check-updates": "^11.1.10",
+    "path": "^0.12.7",
+    "web-ext": "^5.5.0",
+    "webextension-polyfill": "^0.7.0",
+    "webpack": "^5.24.3",
     "websocket-extensions": "^0.1.4"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.11.0"
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
