@@ -18,7 +18,7 @@
     "lodash": "^4.17.21",
     "npm-check-updates": "^11.1.10",
     "path": "^0.12.7",
-    "web-ext": "^5.5.0",
+    "web-ext": "^7.5.0",
     "webextension-polyfill": "^0.7.0",
     "webpack": "^5.24.3",
     "websocket-extensions": "^0.1.4"
